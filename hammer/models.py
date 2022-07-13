@@ -49,4 +49,5 @@ class IPRange(models.Model):
     blocked = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    check_reason = models.TextField()
 
