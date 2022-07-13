@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import IPRange, ASN
+
+admin.site.register(IPRange)
+admin.site.register(ASN)

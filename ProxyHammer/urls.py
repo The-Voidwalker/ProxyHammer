@@ -35,5 +35,7 @@ urlpatterns = [
          ),
          name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    path('tools/', views.tools, name='tools'),
+    path('execute/<str:tool>', views.execute, name='execute'),
     path('admin/', admin.site.urls),
 ]

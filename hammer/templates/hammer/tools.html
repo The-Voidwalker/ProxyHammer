@@ -1,0 +1,55 @@
+{% extends "hammer/layout.html" %}
+
+{% block content %}
+
+{% if error_msg %}
+<div style="padding-top:2em;">
+    <div class="alert alert-danger">
+        <p>{{error_msg}}</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="row" style="padding-top:2em;">
+    <div class="col-md-4">
+        {% if asn_file %}
+        <p>Local ASN database is loaded</p>
+        <form action="{% url 'execute' 'asnupdate' %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Update ASN database" />
+        </form>
+        {% else %}
+        <form action="{% url 'execute' 'asnupdate' %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Generate ASN database" />
+        </form>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <form action="{% url 'execute' 'enwikidown' %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Download latest enwiki list" />
+        </form>
+        {% if enwiki_file %}
+        <form action="{% url 'execute' 'enwikiload' %}" style="padding-top:1em;" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Load latest enwiki list" />
+        </form>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <form action="{% url 'execute' 'globaldown' %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Download latest global list" />
+        </form>
+        {% if global_file %}
+        <form action="{% url 'execute' 'globalload' %}" style="padding-top:1em;" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Load latest global list" />
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+

@@ -35,6 +35,7 @@ class ASN(models.Model):
         choices=Status.choices,
         default=Status.UNCHECKED
     )
+    description = models.TextField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
 
 
@@ -44,10 +45,9 @@ class IPRange(models.Model):
                                validators=[validate_ip_range])
     range_start = models.BinaryField(max_length=35)
     range_end = models.BinaryField(max_length=35)
-    asn = models.ForeignKey(ASN, on_delete=models.CASCADE)
+    asn = models.ForeignKey(ASN, on_delete=models.CASCADE, blank=True, null=True)
     scheduled = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     check_reason = models.TextField()
-

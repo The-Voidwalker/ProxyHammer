@@ -25,6 +25,12 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'tools' %}">Tools</a></li>
+                    {% endif %}
+                    {% if user.is_staff %}
+                    <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                    {% endif %}
                 </ul>
                 {% include 'hammer/loginpartial.html' %}
             </div>
