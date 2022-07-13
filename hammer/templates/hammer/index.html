@@ -1,0 +1,39 @@
+{% extends "hammer/layout.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>ProxyHammer</h1>
+    <p class="lead">ProxyHammer is a tool created by Void to assist in the management of Proxies and Webhosts on Miraheze</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            Currently, this project only supports local account authentication. Registration is closed. OAuth will eventually be used for tool authorization.
+        </p>
+        {% if not user.is_authenticated %}
+        <a class="btn btn-default" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <h2>About Miraheze</h2>
+        <p>
+            Miraheze is a community oriented wikifarm that runs the latest MediaWiki release. It is run soley by volunteers, and could always use your help!
+        </p>
+        <a class="btn btn-default" href="https://miraheze.org">Learn more!</a>
+    </div>
+    <div class="col-md-4">
+        <h2>Database</h2>
+        <p>
+            In the future, this project may publically publish the IP range and ASN lists. For now, they will only be viewable in that listed proxies and webhosts will be globally blocked on Miraheze.
+        </p>
+    </div>
+</div>
+
+<hr />
+
+<p>This tool is still under active development.</p>
+
+{% endblock %}

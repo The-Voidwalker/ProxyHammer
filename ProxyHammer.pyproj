@@ -1,0 +1,145 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>16bb7a2a-89ce-4441-ac3c-dfafb15e24a2</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>manage.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <LaunchProvider>Django launcher</LaunchProvider>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+    <Name>ProxyHammer</Name>
+    <RootNamespace>ProxyHammer</RootNamespace>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <CommandLineArguments>runserver</CommandLineArguments>
+    <WebBrowserPort>8000</WebBrowserPort>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="db.sqlite3" />
+    <Content Include="hammer\static\hammer\content\bootstrap.css" />
+    <Content Include="hammer\static\hammer\content\bootstrap.min.css" />
+    <Content Include="hammer\static\hammer\content\site.css" />
+    <Content Include="hammer\static\hammer\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="hammer\static\hammer\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="hammer\static\hammer\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="hammer\static\hammer\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="hammer\static\hammer\scripts\_references.js" />
+    <Content Include="hammer\static\hammer\scripts\bootstrap.js" />
+    <Content Include="hammer\static\hammer\scripts\bootstrap.min.js" />
+    <None Include="hammer\static\hammer\scripts\jquery.validate-vsdoc.js" />
+    <None Include="hammer\static\hammer\scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery-1.10.2.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery-1.10.2.min.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery-1.10.2.min.map" />
+    <Content Include="hammer\static\hammer\scripts\jquery.validate.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery.validate.min.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="hammer\static\hammer\scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="hammer\static\hammer\scripts\modernizr-2.6.2.js" />
+    <Content Include="hammer\static\hammer\scripts\respond.js" />
+    <Content Include="hammer\static\hammer\scripts\respond.min.js" />
+    <Content Include="hammer\templates\hammer\about.html" />
+    <Content Include="hammer\templates\hammer\index.html" />
+    <Content Include="hammer\templates\hammer\layout.html" />
+    <Content Include="hammer\templates\hammer\login.html" />
+    <Content Include="hammer\templates\hammer\loginpartial.html" />
+    <Content Include="hammer\templates\hammer\pager.html" />
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.10</Version>
+      <Description>env (Python 3.10 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="hammer\admin.py" />
+    <Compile Include="hammer\apps.py" />
+    <Compile Include="hammer\migrations\__init__.py" />
+    <Compile Include="hammer\models.py" />
+    <Compile Include="hammer\forms.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="hammer\tests.py" />
+    <Compile Include="hammer\views.py" />
+    <Compile Include="hammer\__init__.py" />
+    <Compile Include="manage.py" />
+    <Compile Include="ProxyHammer\asgi.py" />
+    <Compile Include="ProxyHammer\settings.py" />
+    <Compile Include="ProxyHammer\urls.py" />
+    <Compile Include="ProxyHammer\wsgi.py" />
+    <Compile Include="ProxyHammer\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="hammer\" />
+    <Folder Include="hammer\migrations\" />
+    <Folder Include="hammer\static\" />
+    <Folder Include="hammer\static\hammer\" />
+    <Folder Include="hammer\static\hammer\content\" />
+    <Folder Include="hammer\static\hammer\fonts\" />
+    <Folder Include="hammer\static\hammer\scripts\" />
+    <Folder Include="hammer\templates\" />
+    <Folder Include="hammer\templates\hammer\" />
+    <Folder Include="ProxyHammer\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
