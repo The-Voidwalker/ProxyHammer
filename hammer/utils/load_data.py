@@ -3,7 +3,6 @@ import ipaddress
 import requests
 
 from ftplib import FTP
-from ipwhois import IPWhois, HTTPLookupError
 from pathlib import Path
 from pyasn import mrtx, pyasn
 from hammer.models import ASN, IPRange, validate_ip_range
@@ -59,25 +58,14 @@ def upsert_asn(number, desc):
     return asn
 
 # TODO: range consolidation on insert
-def add_range(range, check_reason):
+def add_range(range, check_reason, asndb):
     validate_ip_range(range)
     net = ipaddress.ip_network(range, strict=False)
-    asndb = pyasn(str(DOWNLOADS_DIR / "asn.dat"))
     as_number = str(asndb.lookup(net.network_address.compressed)[0])  # TODO: range may exceede allocation
-    try:
-        whois = IPWhois(net.network_address.compressed)
-        data = whois.lookup_rdap(depth=1)
-        if as_number == 'None':
-            as_number = data["asn"]
-        if as_number not in data["asn"] or as_number == 'NA':
-            asn_model = None
-        else:
-            asn_model = upsert_asn(as_number, data["asn_description"])
-    except HTTPLookupError:
-        if as_number == 'None':
-            asn_model = None
-        else:
-            asn_model = upsert_asn(as_number, None)
+    if as_number == 'None':
+        asn_model = None
+    else:
+        asn_model = upsert_asn(as_number, None)
     try:
         IPRange.objects.get(range_start=net.network_address.packed,
                             range_end=net.broadcast_address.packed)
@@ -97,12 +85,13 @@ def load_csv(source):
         csvfile = DOWNLOADS_DIR / "global_list.csv"
     else:
         raise ValueError("Can't load a csv from a source that is not enwiki or global")
+    asndb = pyasn(str(DOWNLOADS_DIR / "asn.dat"))
     with csvfile.open() as f:
         reader = csv.reader(f)
         next(reader)  # Discard headers
         for row in reader:
             if len(row) == 2:
-                add_range(row[0], 'block on %s table with reason "%s"' % (source, row[1]))
+                add_range(row[0], 'block on %s table with reason "%s"' % (source, row[1]), asndb)
 
 def load_enwiki():
     load_csv('enwiki')
