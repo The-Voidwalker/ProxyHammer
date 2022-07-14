@@ -1,9 +1,10 @@
 
 from datetime import datetime
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import ListView
-from hammer.models import IPRange
+from hammer.models import IPRange, ASN
 from hammer.utils import load_data
 
 
@@ -48,7 +49,8 @@ def tools(request):
     )
 
 def execute(request, tool):
-    assert request.user.is_authenticated
+    if not request.user.is_authenticated:
+        raise PermissionDenied
     tools = {
         'asnupdate': load_data.update_asn_db,
         'enwikidown': load_data.download_enwiki,
@@ -57,25 +59,64 @@ def execute(request, tool):
         'globalload': load_data.load_global
     }
     assert tool in tools.keys()
-    #try:
-    tools[tool]()
-    #except:
-    #    opts = {
-    #        'title':'Tools',
-    #        'year':datetime.now().year,
-    #        'error_msg':'Failed to run tool %s' % tool
-    #    }
-    #    opts.update(load_data.get_status())
-    #    return render(
-    #        request,
-    #        'hammer/tools.html',
-    #        opts
-    #    )
-    #else:
-    return HttpResponseRedirect(reverse('tools'))
+    try:
+        tools[tool]()
+    except:
+        opts = {
+            'title':'Tools',
+            'year':datetime.now().year,
+            'error_msg':'Failed to run tool %s' % tool
+        }
+        opts.update(load_data.get_status())
+        return render(
+            request,
+            'hammer/tools.html',
+            opts
+        )
+    else:
+        return HttpResponseRedirect(reverse('tools'))
 
-class IPPager(ListView):
-    paginate_by = 50
-    model = IPRange
+def banip(request, ip_id):
+    if not request.user.is_authenticated:
+        raise PermissionDenied
+    range = IPRange.objects.get(id=ip_id)
+    range.scheduled = True
+    range.save()
+    return HttpResponseRedirect(reverse('listf', args=['pending']))
 
+def banasn(request, asn):
+    if not request.user.is_authenticated:
+        raise PermissionDenied
+    asn_obj = ASN.objects.get(asn=asn)
+    asn_obj.asn_status = ASN.Status.BANNED
+    asn_obj.save()
+    IPRange.objects.filter(asn=asn_obj, blocked=False).update(scheduled=True, last_updated=datetime.now())
+    return HttpResponseRedirect(reverse('listf', args=['pending']))
 
+def list(request, filter=None):
+    err_msg = None
+    if not request.user.is_authenticated:
+        return redirect('home')
+    if filter == 'new':
+        ip_list = IPRange.objects.filter(blocked=False, scheduled=False)
+    elif filter == 'pending':
+        ip_list = IPRange.objects.filter(scheduled=True)
+    elif filter == 'blocked':
+        ip_list = IPRange.objects.filter(blocked=True)
+    else:
+        ip_list = IPRange.objects.all()
+        if filter != None:
+            err_msg = "Unrecognized filter, please use the navbar, or report on GitHub if this issue is persistent"
+    paginator = Paginator(ip_list, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(
+        request,
+        'hammer/pager.html',
+        {
+            'page_obj': page_obj,
+            'title': 'List',
+            'year': datetime.now().year,
+            'err_msg': err_msg
+        }
+    )

@@ -37,5 +37,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('tools/', views.tools, name='tools'),
     path('execute/<str:tool>', views.execute, name='execute'),
+    path('list/', views.list, name='list'),
+    path('list/<str:filter>', views.list, name='listf'),
+    path('banip/<int:ip_id>', views.banip, name='banip'),
+    path('banasn/<int:asn>', views.banasn, name='banasn'),
     path('admin/', admin.site.urls),
 ]

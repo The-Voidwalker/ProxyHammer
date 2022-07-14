@@ -91,7 +91,7 @@ def load_csv(source):
         next(reader)  # Discard headers
         for row in reader:
             if len(row) == 2:
-                add_range(row[0], 'block on %s table with reason "%s"' % (source, row[1]), asndb)
+                add_range(row[0], row[1], asndb)
 
 def load_enwiki():
     load_csv('enwiki')

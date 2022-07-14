@@ -2,7 +2,72 @@
 
 {% block content %}
 
+<h1>Range List</h1>
+{% if err_msg %}
+<div class="alert alert-danger">
+    {{ err_msg }}
+</div>
+{% endif %}
+<hr />
 
+{% for range in page_obj %}
+<div class="row">
+    <div class="col-md-2">
+        {{ range.address }}
+    </div>
+    <div class="col-md-4">
+        {{ range.check_reason }}
+    </div>
+    <div class="col-md-1">
+        {{ range.asn.asn }}
+    </div>
+    <div class="col-md-2">
+        {{ range.asn.description }}
+    </div>
+    <div class="col-md-1">
+        <a href="https://whois-referral.toolforge.org/gateway.py?lookup=true&ip={{ range.address }}">WHOIS</a>
+    </div>
+    <div class="col-md-2">
+        {% if range.blocked or range.scheduled %}
+        <div class="btn disabled">Already blocked</div>
+        {% else %}
+        <form action="{% url 'banip' range.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Block IP" />
+        </form>
+        {% if range.asn %}
+        <form action="{% url 'banasn' range.asn.asn %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" value="Block ASN" />
+        </form>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+<hr />
+{% endfor %}
+
+<div class="pagination" style="position:relative; left:50%; transform: translateX(-50%)">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="{% url 'list' %}">&laquo; first</a> |
+        <a href="?page={{ page_obj.previous_page_number }}">prev</a>
+        {% else %}
+        &laquo; first | prev
+        {% endif %}
+        
+        <span class="current">
+            | Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} |
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a> |
+        <a href="?page={{ page_obj.paginator.num_pages}}">last &raquo;</a>
+        {% else %}
+        next | last &raquo;
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}
 

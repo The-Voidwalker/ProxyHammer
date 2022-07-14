@@ -26,6 +26,17 @@
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
                     {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="list-opts" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            List
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="list-opts">
+                            <li><a href="{% url 'list' %}">All</a></li>
+                            <li><a href="{% url 'listf' 'new'%}">New</a></li>
+                            <li><a href="{% url 'listf' 'pending' %}">Pending</a></li>
+                            <li><a href="{% url 'listf' 'blocked' %}">Blocked</a></li>
+                        </ul>
+                    </li>
                     <li><a href="{% url 'tools' %}">Tools</a></li>
                     {% endif %}
                     {% if user.is_staff %}
