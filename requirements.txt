@@ -4,7 +4,7 @@ cffi==1.15.1
 charset-normalizer==2.1.0
 cryptography==37.0.4
 defusedxml==0.7.1
-Django==4.0.6
+Django==4.1
 dnspython==2.0.0
 idna==3.3
 ipwhois==1.2.0
@@ -19,4 +19,4 @@ social-auth-app-django==5.0.0
 social-auth-core==4.3.0
 sqlparse==0.4.2
 tzdata==2022.1
-urllib3==1.26.10
+urllib3==1.26.11
