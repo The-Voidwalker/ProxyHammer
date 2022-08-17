@@ -7,19 +7,19 @@ from django.utils.translation import gettext_lazy as _
 def validate_ip_range(value):
     """Validates an IP range using the ipaddress module."""
     try:
-        assert ipaddress.ip_network(value, strict=False).is_global == True
-    except ValueError:
+        assert ipaddress.ip_network(value, strict=False).is_global
+    except ValueError as err:
         raise ValidationError(
             _('(%value)s is not a valid IP address or network'),
             code='invalid',
             params={'value': value}
-        )
-    except AssertionError:
+        ) from err
+    except AssertionError as err:
         raise ValidationError(
             _('(%valie)s is not a public IP address or network'),
             code='invalid',
             params={'value': value}
-        )
+        ) from err
 
 
 class ASN(models.Model):

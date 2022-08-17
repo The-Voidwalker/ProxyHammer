@@ -20,8 +20,26 @@ from django.urls import path
 from hammer import views, forms
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
+    path('',
+         views.SimplePage.as_view
+         (
+             template_name='hammer/index.html',
+             extra_context=
+             {
+                 'title': 'Home'
+             }
+         ),
+         name='home'),
+    path('about/',
+         views.SimplePage.as_view
+         (
+             template_name='hammer/about.html',
+             extra_context=
+             {
+                 'title': 'About'
+             }
+         ),
+         name='about'),
     path('login/',
          LoginView.as_view
          (
@@ -33,12 +51,15 @@ urlpatterns = [
                  'year' : datetime.now().year,
              }
          ),
-         name='login'),
+         name = 'login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('tools/', views.tools, name='tools'),
     path('execute/<str:tool>', views.execute, name='execute'),
-    path('list/', views.list, name='list'),
-    path('list/<str:filter>', views.list, name='listf'),
+    path('list/', views.pager, name='list'),
+    path('list/<str:filter>', views.pager, name='listf'),
+    path('list/asn/<int:asn>', views.list_asn, name='listasn'),
+    path('address/<int:pk>', views.address_detail, name='addressdetail'),
+    path('asn/<int:asn>', views.asn_detail, name='asndetail'),
     path('banip/<int:ip_id>', views.banip, name='banip'),
     path('banasn/<int:asn>', views.banasn, name='banasn'),
     path('admin/', admin.site.urls),

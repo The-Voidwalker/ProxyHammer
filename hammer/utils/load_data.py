@@ -1,10 +1,9 @@
 import csv
 import ipaddress
-import requests
-
 from ftplib import FTP
 from pathlib import Path
 from pyasn import mrtx, pyasn
+import requests
 from hammer.models import ASN, IPRange, validate_ip_range
 
 
@@ -15,11 +14,11 @@ def update_asn_db():
     ftp = FTP("archive.routeviews.org")
     ftp.login()
     months = sorted(ftp.nlst('route-views4/bgpdata'), reverse=True)
-    search_path = '/%s/%s' % (months[0], '/RIBS')
+    search_path = f"/{months[0]}/RIBS"
     ftp.cwd(search_path)
     file_list = ftp.nlst()
     if not file_list:
-        search_path = '/%s/%s' % (months[1], '/RIBS')
+        search_path = f"/{months[1]}/RIBS"
         ftp.cwd(search_path)
         file_list = ftp.nlst()
         if not file_list:
@@ -27,7 +26,7 @@ def update_asn_db():
     filename = max(file_list)
     localfile = DOWNLOADS_DIR / 'bgp.dat'
     with localfile.open('wb') as lfile:
-        ftp.retrbinary('RETR %s' % filename, lfile.write)
+        ftp.retrbinary(f"RETR {filename}", lfile.write)
     ftp.close()
     asn_file = DOWNLOADS_DIR / 'asn.dat'
     prefixes = mrtx.parse_mrt_file(str(localfile))
@@ -35,19 +34,21 @@ def update_asn_db():
     localfile.unlink()
 
 def download_csv(url, file_name, force=False):
-    r = requests.get(url)
-    r.raise_for_status()
+    req = requests.get(url)
+    req.raise_for_status()
     file_path = DOWNLOADS_DIR / file_name
     if file_path.is_file() and not force:
         return  # TODO: throw error?
-    with open(file_path, 'w') as f:
-        f.write(r.text)
+    with open(file_path, 'w') as out:
+        out.write(req.text)
 
 def download_global(force=False):
-    download_csv("https://quarry.wmcloud.org/query/65222/result/latest/0/csv", "global_list.csv", force)
+    download_csv("https://quarry.wmcloud.org/query/65222/result/latest/0/csv",
+                 "global_list.csv", force)
 
 def download_enwiki(force=False):
-    download_csv("https://quarry.wmcloud.org/query/65223/result/latest/0/csv", "enwiki_list.csv", force)
+    download_csv("https://quarry.wmcloud.org/query/65223/result/latest/0/csv",
+                 "enwiki_list.csv", force)
 
 def upsert_asn(number, desc):
     try:
@@ -58,10 +59,11 @@ def upsert_asn(number, desc):
     return asn
 
 # TODO: range consolidation on insert
-def add_range(range, check_reason, asndb):
-    validate_ip_range(range)
-    net = ipaddress.ip_network(range, strict=False)
-    as_number = str(asndb.lookup(net.network_address.compressed)[0])  # TODO: range may exceede allocation
+def add_range(address, check_reason, asndb):
+    validate_ip_range(address)
+    net = ipaddress.ip_network(address, strict=False)
+    # TODO: range may exceede allocation
+    as_number = str(asndb.lookup(net.network_address.compressed)[0])
     if as_number == 'None':
         asn_model = None
     else:
@@ -86,8 +88,8 @@ def load_csv(source):
     else:
         raise ValueError("Can't load a csv from a source that is not enwiki or global")
     asndb = pyasn(str(DOWNLOADS_DIR / "asn.dat"))
-    with csvfile.open() as f:
-        reader = csv.reader(f)
+    with csvfile.open() as in_file:
+        reader = csv.reader(in_file)
         next(reader)  # Discard headers
         for row in reader:
             if len(row) == 2:
@@ -105,4 +107,3 @@ def get_status():
     global_file = DOWNLOADS_DIR / "global_list.csv"
     return {"asn_file": asnfile.is_file(), "enwiki_file": enwiki_file.is_file(),
             "global_file": global_file.is_file()}
-
