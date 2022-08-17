@@ -1,0 +1,22 @@
+[tool.black]
+extend-exclude = '''
+/(env|migrations)/
+'''
+
+[tool.pylint.'MAIN']
+ignore= ['CVS','migrations','tests.py']
+
+[tool.pylint.'MESSAGES CONTROL']
+disable=['raw-checker-failed',
+         'bad-inline-option',
+         'locally-disabled',
+         'file-ignored',
+         'suppressed-message',
+         'useless-suppression',
+         'deprecated-pragma',
+         'use-symbolic-message-instead',
+         'missing-module-docstring',
+         'missing-class-docstring',
+         'missing-function-docstring',
+         'bare-except',
+         'no-member']
