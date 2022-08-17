@@ -47,7 +47,7 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", LogoutView.as_view(next_page="/"), name="logout"),
-    path("tools/", views.tools, name="tools"),
+    path("tools/", views.ToolsPage.as_view(), name="tools"),
     path("execute/<str:tool>", views.execute, name="execute"),
     path("list/", views.pager, name="list"),
     path("list/<str:filter_by>", views.pager, name="listf"),

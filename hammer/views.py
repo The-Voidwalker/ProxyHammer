@@ -1,9 +1,10 @@
 from datetime import datetime
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import View, TemplateView
+from django.views.generic import TemplateView
 from hammer.models import IPRange, ASN
 from hammer.utils import load_data
 
@@ -19,17 +20,16 @@ class SimplePage(TemplateView):
         return context
 
 
-def tools(request):
+class ToolsPage(LoginRequiredMixin, SimplePage):
     """Renders a tools page for authenticated users only."""
-    assert isinstance(request, HttpRequest)
-    if not request.user.is_authenticated:
-        return redirect("home")
-    opts = {
-        "title": "Tools",
-        "year": datetime.now().year,
-    }
-    opts.update(load_data.get_status())
-    return render(request, "hammer/tools.html", opts)
+
+    template_name = "hammer/tools.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Tools"
+        context.update(load_data.get_status())
+        return context
 
 
 def execute(request, tool):
