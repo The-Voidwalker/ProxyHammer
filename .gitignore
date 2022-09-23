@@ -130,5 +130,6 @@ dmypy.json
 
 # Visual studio stuff
 .vs/
+.vscode/
 *.pyproj
 *.pyproj.user
