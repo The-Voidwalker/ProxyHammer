@@ -39,6 +39,18 @@ class ASN(models.Model):
     description = models.TextField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        """Represents the ASN as a string with some context information."""
+        return "AS Number " + str(self.asn)
+
+    @property
+    def status_str(self) -> str:
+        """Returns the string representation of the status integer."""
+        for choice in self.Status.choices:
+            if self.asn_status == choice[0]:
+                return choice[1]
+        return None
+
 
 class IPRange(models.Model):
     """Represents possible proxy."""
@@ -54,3 +66,17 @@ class IPRange(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     check_reason = models.TextField()
+
+    def __str__(self) -> str:
+        """Represents the IP address as a string with some context information."""
+        return "IP Address " + self.address
+
+    @property
+    def range_start_str(self) -> str:
+        """Represents the range_start field as a string."""
+        return str(ipaddress.ip_address(self.range_start))
+
+    @property
+    def range_end_str(self) -> str:
+        """Represents the range_end field as a string."""
+        return str(ipaddress.ip_address(self.range_end))

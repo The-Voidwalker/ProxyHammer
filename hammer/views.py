@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
 from hammer.models import IPRange, ASN
 from hammer.utils import load_data
 
@@ -29,6 +30,36 @@ class ToolsPage(LoginRequiredMixin, SimplePage):
         context = super().get_context_data(**kwargs)
         context["title"] = "Tools"
         context.update(load_data.get_status())
+        return context
+
+
+class ASNDetail(LoginRequiredMixin, DetailView):
+    """Supplies a detailed view of the ASN."""
+
+    template_name = "hammer/detail.html"
+    model = ASN
+    slug_field = "asn"
+    slug_url_kwarg = "asn"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["year"] = datetime.now().year
+        context["type"] = "ASN"
+        context["title"] = str(self.object)
+        return context
+
+
+class AddressDetail(LoginRequiredMixin, DetailView):
+    """Supplies a detailed view of the IP Range."""
+
+    template_name = "hammer/detail.html"
+    model = IPRange
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["year"] = datetime.now().year
+        context["type"] = "Address"
+        context["title"] = str(self.object)
         return context
 
 
@@ -136,13 +167,3 @@ def list_asn(request, asn):
             "err_msg": err_msg,
         },
     )
-
-
-def asn_detail(asn):
-    """Supplies a detailed view of the ASN."""
-    pass
-
-
-def address_detail(address):
-    """Supplies a detailed view of the IP address."""
-    pass

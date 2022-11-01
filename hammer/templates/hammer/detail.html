@@ -1,0 +1,62 @@
+{% extends "hammer/layout.html" %}
+
+{% block content %}
+
+<h1> {{ object }} </h1>
+
+<div style="padding-bottom: 1em;"><small>Last Updated: {{ object.last_updated }}</small></div>
+
+{% if type == 'Address' %}
+    <p>Added: {{ object.date_added }}</p>
+    <p>Status: 
+        {% if object.blocked %}
+        blocked (<a href="https://meta.miraheze.org/wiki/Special:GlobalBlock/{{ object.address }}">Check on meta</a>)
+        {% elif object.scheduled %}
+        scheduled to be blocked
+        {% else %}
+        pending review
+        {% endif %}
+    </p>
+    <p>Description:</p>
+    <blockquote>
+        {{ object.check_reason }}
+    </blockquote>
+    {% if object.asn %}
+    <p>
+        ASN: <a href="{% url 'asndetail' object.asn.asn %}">{{ object.asn.asn }};</a>
+        Status: {{ object.asn.status_str }};
+        Description: {{ object.asn.description }}.
+    </p>
+    <p>
+        <a href="https://whois-referral.toolforge.org/gateway.py?lookup=true&ip={{ object.range_start_str }}">Whois</a>
+        (
+            <a href="https://robtex.com/ip-lookup/{{ object.range_start_str }}">Alt</a>
+            |
+            <a href="https://whois.toolforge.org/gateway.py?lookup=true&ip={{ object.range_start_str }}">Old</a>
+        )
+        &bull;
+        <a href="https://whatismyipaddress.com/ip/{{ object.range_start_str }}">Geolocate</a>
+        (<a href="https://db-ip.com/{{ object.range_start_str }}">Alt</a>)
+        &bull;
+        <a href="https://ipcheck.toolforge.org/index.php?ip={{ object.range_start_str }}">Proxy Checker</a>
+    </p>
+    {% endif %}
+    {% if not object.blocked and not object.scheduled %}
+        <form style="display: inline;" action="{% url 'banip' object.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn" type="submit" value="Block IP" />
+        </form>
+        {% if object.asn %}
+        <form style="display: inline;" action="{% url 'banasn' object.asn.asn %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" value="Block ASN" />
+        </form>
+        {% endif %}
+    {% endif %}
+{% elif type == 'ASN' %}
+    <p>Status: {{ object.status_str }}</p>
+    <p>Description: {{ object.description }}</p>
+    <p><a href="{% url 'listasn' object.asn %}">Known ranges</a></p>
+{% endif %}
+
+{% endblock %}
