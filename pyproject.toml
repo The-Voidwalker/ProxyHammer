@@ -19,4 +19,6 @@ disable=['raw-checker-failed',
          'missing-class-docstring',
          'missing-function-docstring',
          'bare-except',
-         'no-member']
+         'no-member',
+         'too-many-arguments',
+         'too-many-ancestors']

@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from hammer.models import IPRange, ASN
 from hammer.utils import load_data
+from hammer.utils.jobs import global_manager
 
 
 class SimplePage(TemplateView):
@@ -74,14 +75,16 @@ def execute(request, tool):
         "globaldown": load_data.download_global,
         "globalload": load_data.load_global,
     }
-    assert tool in tool_dict.keys()
+    assert tool in tool_dict
     try:
-        tool_dict[tool]()
+        global_manager.make_and_register(
+            tool, tool_dict[tool], allow_queue=False, strict=True
+        )
     except:
         opts = {
             "title": "Tools",
             "year": datetime.now().year,
-            "error_msg": f"Failed to run tool {tool}",
+            "error_msg": f"Tool {tool} is already running",
         }
         opts.update(load_data.get_status())
         return render(request, "hammer/tools.html", opts)
@@ -126,7 +129,10 @@ def pager(request, filter_by=None):
     else:
         ip_list = IPRange.objects.all()
         if filter_by is not None:
-            err_msg = "Unrecognized filter, please use the navbar, or report on GitHub if this issue is persistent"
+            err_msg = (
+                "Unrecognized filter, please use the navbar, or report on GitHub"
+                + " if this issue is persistent"
+            )
     paginator = Paginator(ip_list, 50)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
